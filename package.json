@@ -1,0 +1,25 @@
+{
+  "name": "movie_api",
+  "version": "1.0.0",
+  "description": "<h1>Movie API</h1> This is a Rest API made with Node.js that will: <ul> <li>provide a list of movies with information about genre/director/etc.</li> <li> users to create, update, and delete an account</li> <li> users to create a list of their favorite movies from the database</li> </ul>",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/farmeroy/Movie-API.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/farmeroy/Movie-API/issues"
+  },
+  "homepage": "https://github.com/farmeroy/Movie-API#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1"
+  }
+}
