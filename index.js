@@ -3,7 +3,6 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 
-
 const app = express();
 
 const PORT = 8080;
@@ -29,9 +28,11 @@ app.use(morgan('common'));
 app.use(requestTime);
 app.use(express.static('./public'));
 
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
 
 app.use(bodyParser.json());
 app.use(methodOverride());
@@ -46,7 +47,6 @@ app.get('/', (req, res) => {
   res.send(`Welcome to myFlix.
    \n\n <small> You accessed this site at ${req.requestTime}</small>`);
 });
-
 
 app.get('/movies', (req, res) => {
   res.json(favMovies);
