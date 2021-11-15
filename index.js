@@ -1,7 +1,12 @@
 const express = require('express');
 const morgan = require('morgan');
+const bodyParser = require('body-parser');
+const methodOverride = require('method-override');
+
 
 const app = express();
+
+const PORT = 8080;
 
 let favMovies = [
   { title: 'the Immigrant', director: 'Charlie Chaplin' },
@@ -24,6 +29,17 @@ app.use(morgan('common'));
 app.use(requestTime);
 app.use(express.static('./public'));
 
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+
+app.use(bodyParser.json());
+app.use(methodOverride());
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
 
 // GET requests
 app.get('/', (req, res) => {
@@ -37,6 +53,6 @@ app.get('/movies', (req, res) => {
 });
 
 // listen for requests
-app.listen(8080, () => {
-  console.log('Your app is listening on port 8080.');
+app.listen(PORT, () => {
+  console.log(`Your app is listening on port ${PORT}.`);
 });
