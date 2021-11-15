@@ -12,7 +12,7 @@
     "url": "git+https://github.com/farmeroy/Movie-API.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Raffaele Cataldo",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/farmeroy/Movie-API/issues"
@@ -23,5 +23,10 @@
     "express": "^4.17.1",
     "method-override": "^3.0.0",
     "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.2.0",
+    "eslint-plugin-react": "^7.27.0",
+    "nodemon": "^2.0.15"
   }
 }
