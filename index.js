@@ -17,7 +17,14 @@ let moviesData = [
 ];
 //DUMMY directors data
 let directorsData = [
-  { name: "Fritz Lang" }
+  { name: 'Fritz Lang' }
+];
+
+// DUMMY user data
+let usersData = [
+  { userName: 'user1',
+    movies: 'It'
+  }
 ];
 
 
@@ -86,7 +93,38 @@ app.get('/movies/:title/genre', (req, res) => {
 
 // return the data about directors in the database
 app.get('/directors', (req, res) => {
+  res.json(directorsData);
+});
+
+// return data for a specific director
+app.get('/directors/:name', (req, res) => {
   res.json(
+    directorsData.find((director) => {
+      return director.name === req.params.name;
+    })
+  );
+});
+
+// return all user data
+app.get('/users', (req, res) => {
+  res.json(usersData);
+});
+
+// add a user 
+app.post('/users', (req, res) => {
+  let newUser = req.body;
+
+  if (!newUser.name) {
+    const message = 'Missing name in request body';
+    res.status(400).send(message);
+  } else {
+    usersData.push(newUser);
+    res.status(201).send(newUser);
+  }
+});
+
+
+
 // listen for requests
 app.listen(PORT, () => {
   console.log(`Your app is listening on port ${PORT}.`);
