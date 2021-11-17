@@ -5,6 +5,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+      table {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+      td, th {
+        border: 1px solid black;
+        padding: 8px;
+      }
+      tr:nth-child(even){
+        background-color: #f2f2f2;
+      }
+      th {
+        color: white;
+        background-color: rgb(80,80,80);
+      }
+    </style>
 </head>
 <body>
     <h1>Movie API Documentation</h1>
@@ -101,18 +118,19 @@
           <td>Text confirmation that the user account was deleted</td>                         
         </tr>
         <tr>
-          <td>Add film to User's film list</td>
-          <td>/users/[username]/add-film</td>                         
+          <td>Add film to User's movie list</td>
+          <td>/users/[username]/movies</td>                         
           <td>PUT</td>                         
           <td>JSON object: { title: "Film Title" }</td>                         
-          <td>Test confirmation that the title was added</td>                         
+          <td>Text confirmation that the title was added</td>                         
         </tr>
         <tr>
           <td>Remove a film from the User's film list</td>
-          <td>/users/[username]/filmlist/</td>                         
-          <td></td>                         
-          <td></td>                         
-          <td></td>                         
+          <td>/users/[username]/movies</td>                         
+          <td>DELETE</td>                         
+          <td>JSON Object containing:
+            <br>{ title: "title" }</td>                         
+          <td>Text confirmation that the movie was deleted</td>                         
         </tr>
   </table>
 
