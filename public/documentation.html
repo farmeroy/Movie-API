@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
+      body {
+        padding: 2rem;
+      }
       table {
         border: 1px solid black;
         border-collapse: collapse;
@@ -90,31 +93,26 @@
           <td>POST</td>                         
           <td>JSON object should look like this:
               {
-                username: “foo89”,
+                userName: “foo89”,
                 email: “email@email.com”
               }
           </td>                         
 
           <td>JSON object returned<br>
-            {id: 666, username: "foo89", email: "email@email.com"}</td>                         
+            {userName: "foo89", email: "email@email.com"}</td>                         
         </tr>
         <tr>
           <td>Update user name</td>
-          <td>/users/[username]</td>                         
+          <td>/users/[userName]/update/[newUserName]</td>                         
           <td>PUT</td>                         
-          <td>JSON object formatted like this: 
-            <br>{ newUsername: "foo90", 
-                  id: [matching id]}</td>                         
-          <td>Text message: 'User "foo89" is now "foo90".'</td>                         
+          <td>None</td>                         
+          <td>Text message: 'User "userName" is now "newUserName".'</td>                         
         </tr>
         <tr>
           <td>Delete User Account</td>
-          <td>/users/[username]</td>                         
+          <td>/users/[username]/delete</td>                         
           <td>DELETE</td>                         
-          <td>JSON Object containing: 
-            <br>{ username: "Testname666",
-                  id: [matching id]
-                }</td>                         
+          <td>None</td>                         
           <td>Text confirmation that the user account was deleted</td>                         
         </tr>
         <tr>
