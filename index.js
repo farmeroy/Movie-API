@@ -9,12 +9,17 @@ const app = express();
 const PORT = 3000;
 
 let moviesData = [
-  { title: 'the Immigrant', director: 'Charlie Chaplin' },
+  { title: 'the Immigrant', director: 'Charlie Chaplin', genre: 'Comedy' },
   {
     title: 'M',
     director: 'Fritz Lang',
+    genre: 'Thriller',
   },
-  { title: 'the Big Labowski', director: 'the Cohen Brothers' },
+  {
+    title: 'the Big Labowski',
+    director: 'the Cohen Brothers',
+    genre: 'Comedy',
+  },
 ];
 //DUMMY directors data
 let directorsData = [{ name: 'Fritz Lang' }];
@@ -77,7 +82,7 @@ app.get('/movies/:title/genre', (req, res) => {
   if (movie) {
     res
       .status(201)
-      .send(`The movie ${req.params.title} is classified as a ${movie.title}`);
+      .send(`The movie ${req.params.title} is classified as a ${movie.genre}`);
   } else {
     res.status(404).send(`Cannot find movie "${req.params.title}"`);
   }
@@ -160,6 +165,23 @@ app.put('/users/:userName/movies', (req, res) => {
     }
     user.movies.push(req.body);
     res.status(201).send(`'${req.body.title}' added to movie list`);
+  } else {
+    res
+      .status(404)
+      .send(`Could not find user with user name '${req.params.userName}'.`);
+  }
+});
+
+// remove movie from user account
+app.delete('/users/:userName/movies/:title', (req, res) => {
+  let user = usersData.find((user) => {
+    return user.userName === req.params.userName;
+  });
+  if (user) {
+    user.movies = user.movies.filter((obj) => {
+      return obj.title !== req.params.title;
+    });
+    res.status(201).send(`${req.params.title} was removed from movies list.`);
   } else {
     res
       .status(404)
