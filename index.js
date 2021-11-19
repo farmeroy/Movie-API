@@ -21,6 +21,7 @@ let moviesData = [
     genre: 'Comedy',
   },
 ];
+
 //DUMMY directors data
 let directorsData = [{ name: 'Fritz Lang' }];
 
