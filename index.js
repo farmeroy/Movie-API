@@ -141,7 +141,7 @@ app.get('/movies/:title/:director', (req, res) => {
 // return data for a specific director
 app.get('/directors/:name', (req, res) => {
   res.json(
-    directorsData.find((director) => {
+    directorsData.find((direcor) => {
       return director.name === req.params.name;
     })
   );
@@ -168,13 +168,13 @@ app.post('/users', (req, res) => {
 // update user info
 app.put('/users/:name/update/:newName', (req, res) => {
   let user = usersData.find((user) => {
-    return user.userName === req.params.name;
+    return user.UserName === req.params.name;
   });
 
   if (user) {
-    let oldName = user.userName;
-    user.userName = req.params.newName;
-    res.status(201).send(`User '${oldName}' is now '${user.userName}'.`);
+    let oldName = user.UserName;
+    user.UserName = req.params.newName;
+    res.status(201).send(`User '${oldName}' is now '${user.UserName}'.`);
   } else {
     res.status(404).send(`There is no user with name '${req.params.name}'.`);
   }
@@ -183,11 +183,11 @@ app.put('/users/:name/update/:newName', (req, res) => {
 // delete user account
 app.delete('/users/:userName/delete', (req, res) => {
   let user = usersData.find((user) => {
-    return user.userName === req.params.userName;
+    return user.UserName === req.params.userName;
   });
   if (user) {
     usersData = usersData.filter((obj) => {
-      return obj.userName !== req.params.userName;
+      return obj.UserName !== req.params.userName;
     });
     res
       .status(201)
@@ -202,28 +202,28 @@ app.delete('/users/:userName/delete', (req, res) => {
 // add movies to the user account
 app.put('/users/:userName/movies', (req, res) => {
   let user = usersData.find((user) => {
-    return user.userName === req.params.userName;
+    return user.UserName === req.params.userName;
   });
   if (user) {
-    if (!user.movies) {
-      user.movies = [];
+    if (!user.FavMovies) {
+      user.FavMovies = [];
     }
-    user.movies.push(req.body);
+    user.FavMovies.push(req.body);
     res.status(201).send(`'${req.body.Title}' added to movie list`);
   } else {
     res
       .status(404)
-      .send(`Could not find user with user name '${req.params.userName}'.`);
+      .send(`Could not find user with user name '${req.params.UserName}'.`);
   }
 });
 
 // remove movie from user account
 app.delete('/users/:userName/movies/:Title', (req, res) => {
   let user = usersData.find((user) => {
-    return user.userName === req.params.userName;
+    return user.UserName === req.params.userName;
   });
   if (user) {
-    user.movies = user.movies.filter((obj) => {
+    user.FavMovies === user.movies.filter((obj) => {
       return obj.Title !== req.params.Title;
     });
     res.status(201).send(`${req.params.Title} was removed from movies list.`);
