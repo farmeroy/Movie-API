@@ -9,24 +9,66 @@ const app = express();
 const PORT = 3000;
 
 let moviesData = [
-  { title: 'the Immigrant', director: 'Charlie Chaplin', genre: 'Comedy' },
   {
-    title: 'M',
-    director: 'Fritz Lang',
-    genre: 'Thriller',
+    _id: 'ObjectId("619773d2afb0f0cd425c0e63")',
+    Title: 'M',
+    Description:
+      'When the police in Berlin are unable to catch a child-murderer, other criminals join in the manhung.',
+    Genre: {
+      Name: 'Thriller',
+      Description:
+        'Thriller, or suspense, film is a broad genre that feature exciting plots, often dealing with criminality.',
+    },
+    Director: {
+      Name: 'Fritz Lang',
+      Bio: 'Fritz Lang was one of the most influential of the German expressionist film makers. He escaped Nazi Germany before World War II.',
+      Birth: '1890',
+      Death: '1976',
+    },
+    ImagePath: 'm.png',
+    Featured: true,
+    Actors: ['Peter Lorre'],
   },
   {
-    title: 'the Big Labowski',
-    director: 'the Cohen Brothers',
-    genre: 'Comedy',
+    _id: 'ObjectId("6197a168afb0f0cd425c0e64")',
+    Title: 'Modern Times',
+    Description:
+      'The Tramp struggles to live in modern industrial society with the help of a young homeless woman.',
+    Genre: {
+      Name: 'Comedy',
+      Description: 'A funny movie',
+    },
+    Director: {
+      Name: 'Charlie Chaplin',
+      Bio: 'Sir Charles Spencer Chaplin Jr. KBE was a English comic actor, filmmaker, and composer who rose to fame in the era of silent film. He became a worldwide icon through his screen persona, The Tramp, and is considered one of the most important figures in the history of the film industry. Although he was internationally admired, he was persecuted by the US government and accused of being a communist. He eventually lived a life of exile in Vevey, Switzerland.',
+      Birth: '1889',
+      Death: '1977',
+    },
+    ImagePath: 'modern-times.png',
+    Featured: true,
+    Actors: ['Charlie Chaplin'],
   },
 ];
 
-//DUMMY directors data
-let directorsData = [{ name: 'Fritz Lang' }];
-
 // DUMMY user data
-let usersData = [{ userName: 'user1', movies: [{ title: 'It' }] }];
+let usersData = [
+  {
+    _id: 'ObjectId("6197dd31afb0f0cd425c0e70")',
+    UserName: 'filmlover4',
+    Password: '1234',
+    Email: '5678',
+    Birthday: 'ISODate("1970-01-01T00:00:01.976Z")',
+    FavMovies: [],
+  },
+  {
+    _id: 'ObjectId("6197de26afb0f0cd425c0e72")',
+    UserName: 'babyrosebud',
+    Password: 'childhoodmemory',
+    Email: 'sentimentaluser@aol.com',
+    Birthday: 'ISODate("1955-02-14T00:00:00Z")',
+    FavMovies: [],
+  },
+];
 
 // send back the timestamp of the request
 const requestTime = (req, res, next) => {
@@ -66,32 +108,34 @@ app.get('/movies', (req, res) => {
 });
 
 // return the data for a specific movie
-app.get('/movies/:title', (req, res) => {
+app.get('/movies/:Title', (req, res) => {
   res.json(
     moviesData.find((movie) => {
-      return movie.title === req.params.title;
+      return movie.Title === req.params.Title;
     })
   );
 });
 
 // return the genre of a movie
-app.get('/movies/:title/genre', (req, res) => {
+app.get('/movies/:Title/Genre', (req, res) => {
   let movie = moviesData.find((movie) => {
-    return movie.title === req.params.title;
+    return movie.Title === req.params.Title;
   });
 
   if (movie) {
     res
       .status(201)
-      .send(`The movie ${req.params.title} is classified as a ${movie.genre}`);
+      .send(`The movie ${req.params.Title} is classified as a ${movie.Genre.Name}`);
   } else {
-    res.status(404).send(`Cannot find movie "${req.params.title}"`);
+    res.status(404).send(`Cannot find movie "${req.params.Title}"`);
   }
 });
 
 // return the data about directors in the database
-app.get('/directors', (req, res) => {
-  res.json(directorsData);
+app.get('/movies/:title/:director', (req, res) => {
+  res.send(
+    '{ this returns a json with information about the movie\'s director }'
+  );
 });
 
 // return data for a specific director
@@ -165,7 +209,7 @@ app.put('/users/:userName/movies', (req, res) => {
       user.movies = [];
     }
     user.movies.push(req.body);
-    res.status(201).send(`'${req.body.title}' added to movie list`);
+    res.status(201).send(`'${req.body.Title}' added to movie list`);
   } else {
     res
       .status(404)
@@ -174,15 +218,15 @@ app.put('/users/:userName/movies', (req, res) => {
 });
 
 // remove movie from user account
-app.delete('/users/:userName/movies/:title', (req, res) => {
+app.delete('/users/:userName/movies/:Title', (req, res) => {
   let user = usersData.find((user) => {
     return user.userName === req.params.userName;
   });
   if (user) {
     user.movies = user.movies.filter((obj) => {
-      return obj.title !== req.params.title;
+      return obj.Title !== req.params.Title;
     });
-    res.status(201).send(`${req.params.title} was removed from movies list.`);
+    res.status(201).send(`${req.params.Title} was removed from movies list.`);
   } else {
     res
       .status(404)
