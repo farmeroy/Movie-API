@@ -2,73 +2,21 @@ const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
-const uuid = require('uuid');
+
+// import mongoose and our models
+const mongoose = require('mongoose');
+const Models = require('./models.js');
+
+// references to the models
+const Movies = Models.Movie;
+const Users = Models.User;
+
+// Connect to the database
+mongoose.connect('mongodb://localhost:27017/movingPictures', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const app = express();
 
 const PORT = 3000;
-
-let moviesData = [
-  {
-    _id: 'ObjectId("619773d2afb0f0cd425c0e63")',
-    Title: 'M',
-    Description:
-      'When the police in Berlin are unable to catch a child-murderer, other criminals join in the manhung.',
-    Genre: {
-      Name: 'Thriller',
-      Description:
-        'Thriller, or suspense, film is a broad genre that feature exciting plots, often dealing with criminality.',
-    },
-    Director: {
-      Name: 'Fritz Lang',
-      Bio: 'Fritz Lang was one of the most influential of the German expressionist film makers. He escaped Nazi Germany before World War II.',
-      Birth: '1890',
-      Death: '1976',
-    },
-    ImagePath: 'm.png',
-    Featured: true,
-    Actors: ['Peter Lorre'],
-  },
-  {
-    _id: 'ObjectId("6197a168afb0f0cd425c0e64")',
-    Title: 'Modern Times',
-    Description:
-      'The Tramp struggles to live in modern industrial society with the help of a young homeless woman.',
-    Genre: {
-      Name: 'Comedy',
-      Description: 'A funny movie',
-    },
-    Director: {
-      Name: 'Charlie Chaplin',
-      Bio: 'Sir Charles Spencer Chaplin Jr. KBE was a English comic actor, filmmaker, and composer who rose to fame in the era of silent film. He became a worldwide icon through his screen persona, The Tramp, and is considered one of the most important figures in the history of the film industry. Although he was internationally admired, he was persecuted by the US government and accused of being a communist. He eventually lived a life of exile in Vevey, Switzerland.',
-      Birth: '1889',
-      Death: '1977',
-    },
-    ImagePath: 'modern-times.png',
-    Featured: true,
-    Actors: ['Charlie Chaplin'],
-  },
-];
-
-// DUMMY user data
-let usersData = [
-  {
-    _id: 'ObjectId("6197dd31afb0f0cd425c0e70")',
-    UserName: 'filmlover4',
-    Password: '1234',
-    Email: '5678',
-    Birthday: 'ISODate("1970-01-01T00:00:01.976Z")',
-    FavMovies: [],
-  },
-  {
-    _id: 'ObjectId("6197de26afb0f0cd425c0e72")',
-    UserName: 'babyrosebud',
-    Password: 'childhoodmemory',
-    Email: 'sentimentaluser@aol.com',
-    Birthday: 'ISODate("1955-02-14T00:00:00Z")',
-    FavMovies: [],
-  },
-];
 
 // send back the timestamp of the request
 const requestTime = (req, res, next) => {
@@ -104,7 +52,8 @@ app.get('/', (req, res) => {
 
 // get the entire movie database
 app.get('/movies', (req, res) => {
-  res.json(moviesData);
+  // trying to query the db
+  Movies.find().then((movies) => res.json(movies));
 });
 
 // return the data for a specific movie
@@ -149,89 +98,135 @@ app.get('/directors/:name', (req, res) => {
 
 // return all user data
 app.get('/users', (req, res) => {
-  res.json(usersData);
+  Users.find()
+    .populate('FavMovies')
+    .then((users) => {
+      res.status(201).json(users); 
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+
+
+// return data for a specific user
+app.get('/users/:UserName', (req, res) => {
+  Users.findOne({ UserName: req.params.UserName })
+    .populate('FavMovies')
+    .then((user) => {
+      res.json(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).end('Error: ' +err);
+    });
 });
 
 // add a user
 app.post('/users', (req, res) => {
-  let newUser = req.body;
-  if (!newUser.userName) {
-    const message = 'Missing name in request body';
-    res.status(400).send(message);
-  } else {
-    newUser.id = uuid.v4();
-    usersData.push(newUser);
-    res.status(201).send(newUser);
-  }
+// We expect json in this format
+  // { 
+  // ID: Integer,
+  // Username: String,
+  // Email: String,
+  // Birthday: Date
+// Check if Username already exists
+  Users.findOne({ UserName: req.body.UserName })
+    .then((user) => {
+      // if it exists return a message, else create the user
+      if (user) {
+        return res.status(400).send(req.body.UserName + 'already exists');
+      } else {
+        Users
+          // the Model.create method takes an object that matches the model
+          .create({
+            UserName: req.body.UserName,
+            Password: req.body.Password,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday
+          })
+          // send a confirmation response
+          .then((user) => { res.status(201).json(user) })
+          // cath any error that occors during the creation, like a missing value or incorret datatype
+          .catch((error) => {
+            console.error(error);
+            res.status(500).send('Error: ' + error);
+          })
+        }
+      })
+    // catch an error that occurs in the original query
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
 });
 
 // update user info
-app.put('/users/:name/update/:newName', (req, res) => {
-  let user = usersData.find((user) => {
-    return user.UserName === req.params.name;
-  });
-
-  if (user) {
-    let oldName = user.UserName;
-    user.UserName = req.params.newName;
-    res.status(201).send(`User '${oldName}' is now '${user.UserName}'.`);
-  } else {
-    res.status(404).send(`There is no user with name '${req.params.name}'.`);
-  }
+app.put('/users/:UserName/update', (req, res) => {
+  Users.findOneAndUpdate(
+    { 
+    UserName: req.params.UserName 
+    },
+    { $set:
+      {
+        UserName: req.body.UserName,
+        Password: req.body.Password,
+        Email: req.body.Email,
+        Birthday: req.body.Birthday
+      }
+    },
+      // this option returns the document that was updated
+      { new: true },
+      // here, demonstrating inclusion of error handling within a callback function
+      (err, updatedUser) => {
+        if(err) {
+          console.error(err);
+          res.status(500).send('Error: ' + err);
+        } else {
+          res.json(updatedUser);
+        }
+      });
 });
+
 
 // delete user account
-app.delete('/users/:userName/delete', (req, res) => {
-  let user = usersData.find((user) => {
-    return user.UserName === req.params.userName;
-  });
-  if (user) {
-    usersData = usersData.filter((obj) => {
-      return obj.UserName !== req.params.userName;
+app.delete('/users/:Username/delete', (req, res) => {
+  Users.findOneAndRemove({UserName: req.params.Username }) 
+    .then((user) => {
+      if (!user) {
+        res.status(400).send(req.params.Username + ' was not found');
+      } else {
+        res.status(200).send(req.params.Username + ' was deleted.');
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
     });
-    res
-      .status(201)
-      .send(`User '${req.params.userName}' was deleted from database.`);
-  } else {
-    res
-      .status(404)
-      .send(`Could not find user with user name '${req.params.userName}'.`);
-  }
-});
+ });
 
 // add movies to the user account
-app.put('/users/:userName/movies', (req, res) => {
-  let user = usersData.find((user) => {
-    return user.UserName === req.params.userName;
-  });
-  if (user) {
-    if (!user.FavMovies) {
-      user.FavMovies = [];
-    }
-    user.FavMovies.push(req.body);
-    res.status(201).send(`'${req.body.Title}' added to movie list`);
-  } else {
-    res
-      .status(404)
-      .send(`Could not find user with user name '${req.params.UserName}'.`);
-  }
+app.put('/users/:UserName/movies/:MovieID', (req, res) => {
+  Users.findOneAndUpdate(
+    { UserName: req.params.UserName },
+    { $push:
+      { FavMovies: req.params.MovieID }
+    },
+    { new: true },
+    (err, updatedUser) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      } else {
+        res.json(updatedUser);
+      }
+    }); 
 });
 
 // remove movie from user account
 app.delete('/users/:userName/movies/:Title', (req, res) => {
-  let user = usersData.find((user) => {
-    return user.UserName === req.params.userName;
-  });
-  if (user) {
-    user.FavMovies === user.movies.filter((obj) => {
-      return obj.Title !== req.params.Title;
-    });
-    res.status(201).send(`${req.params.Title} was removed from movies list.`);
-  } else {
-    res
-      .status(404)
-      .send(`Could not find user with user name '${req.params.userName}'.`);
-  }
+
 });
 
 // listen for requests
