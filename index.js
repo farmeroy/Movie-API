@@ -245,12 +245,10 @@ app.put('/users/:UserName/movies/remove/:id', (req, res) => {
   Users.findOne({ UserName: req.params.UserName })
     .then((user) => {
       // the pull method removes a subdocument array only by id
-      user.FavMovies.pull({_id: req.params.id});
+      user.FavMovies.pull({ _id: req.params.id });
       // for the pull to take effect, we must save the document
       user.save();
-      res
-        .status(200)
-        .send('Movie removed')
+      res.status(200).send('Movie removed');
       // user.save();
     })
     .catch((err) => {
