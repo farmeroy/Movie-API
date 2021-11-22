@@ -223,26 +223,41 @@ app.put('/users/:UserName/movies/:MovieID', (req, res) => {
   );
 });
 
-// remove movie from user's FavMovies
-app.put('/users/:UserName/movies/remove/:Title', (req, res) => {
-  Users.findOneAndUpdate(
-    { UserName: req.params.UserName },
-    {
-      $pull: {
-        FavMovies: [req.params.Title]  } 
-      },
-    { new: true },
-    (err, updatedFavMovies) => {
-      if (err) {
-        console.error(err);
-        res.status(500).send('Error: ' + err);
+// Return a users favorite movies
+app.get('/users/:UserName/movies', (req, res) => {
+  Users.findOne({ UserName: req.params.UserName })
+    .populate('FavMovies')
+    .then((user) => {
+      if (user) {
+        res.status(200).json(user.FavMovies);
       } else {
-        res.status(200).json(updatedFavMovies);
+        res.status(404);
       }
-    }
-  );
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
+// remove movie from user's FavMovies
+app.put('/users/:UserName/movies/remove/:id', (req, res) => {
+  Users.findOne({ UserName: req.params.UserName })
+    .then((user) => {
+      // the pull method removes a subdocument array only by id
+      user.FavMovies.pull({_id: req.params.id});
+      // for the pull to take effect, we must save the document
+      user.save();
+      res
+        .status(200)
+        .send('Movie removed')
+      // user.save();
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
 // listen for requests
 
 app.listen(PORT, () => {
