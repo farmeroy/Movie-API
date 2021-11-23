@@ -74,39 +74,62 @@
           <td>A text message with the movie name and genre.</td>                         
         </tr>
         <tr>
-          <td>Return a list of all the directors in the database</td>
-          <td>/directors</td>                         
+          <td>Return information about the director of a movie</td>
+          <td>/movies/:Title/director</td>                         
           <td>GET</td>                         
           <td>None</td>                         
-          <td>JSON object containing data about all the directors.</td>                         
+          <td>JSON object containing data about the director.</td>                         
         </tr>
         <tr>
           <td>Return data about a single director (by name)</td>
           <td>/directors/[name]</td>                         
           <td>GET</td>                         
           <td>None</td>                         
-          <td>JSON obect containing data about the director.</td>                         
+          <td>JSON obect containing data about the director.</td>      
+        </tr>
+        <tr>
+          <td>Return information about all users</td>
+          <td>/users</td>
+          <td>GET</td>
+          <td>None</td>
+          <td>An array of user objects (JSON)</td>
+        </tr>
+        <tr>
+          <td>Return information about a single user by name</td>
+          <td>/users/[UserName]</td>
+          <td>GET</td>
+          <td>none</td>
+          <td>JSON object with user info</td>
         </tr>
         <tr>
           <td>Register new User</td>
           <td>/users</td>                         
           <td>POST</td>                         
           <td>JSON object should look like this:
-              {
-                userName: “foo89”,
-                email: “email@email.com”
+            <blockquote>{
+                "UserName": [String],
+                "Password": [String],
+                "Email": [String],
+                "Birthday": [Date]
               }
+            </blockquote>
           </td>                         
 
-          <td>JSON object returned<br>
-            {userName: "foo89", email: "email@email.com"}</td>                         
+          <td>The user as a JSON object is returned</td>                         
         </tr>
         <tr>
-          <td>Update user name</td>
-          <td>/users/[userName]/update/[newUserName]</td>                         
+          <td>Update user info</td>
+          <td>/users/[userName]/update</td>                         
           <td>PUT</td>                         
-          <td>None</td>                         
-          <td>Text message: 'User "userName" is now "newUserName".'</td>                         
+          <td>A JSON object which sends new values for any (or all) of these keys            <blockquote>{
+                "UserName": [String],
+                "Password": [String],
+                "Email": [String],
+                "Birthday": [Date]
+              }
+            </blockquote> 
+          </td>                         
+          <td>A JSON object containing all current user info is returned.</td>                          
         </tr>
         <tr>
           <td>Delete User Account</td>
@@ -116,16 +139,16 @@
           <td>Text confirmation that the user account was deleted</td>                         
         </tr>
         <tr>
-          <td>Add film to User's movie list</td>
-          <td>/users/[username]/movies</td>                         
+          <td>Add film to User's favorite movie list</td>
+          <td>/users/[username]/movies/[MovieID]</td>                         
           <td>PUT</td>                         
-          <td>JSON object: { title: "Film Title" }</td>                         
-          <td>Text confirmation that the title was added</td>                         
+          <td>None</td>                         
+          <td>The movie id is returned as confirmation.</td>                         
         </tr>
         <tr>
           <td>Remove a film from the User's film list</td>
-          <td>/users/[username]/movies/[title]</td>                         
-          <td>DELETE</td>                         
+          <td>/users/[UserName]/movies/remove/[MovieID]</td>                      
+          <td>PUT</td>                         
           <td>None</td>
           <td>Text confirmation that the movie was deleted</td>                         
         </tr>
