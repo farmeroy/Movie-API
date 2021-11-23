@@ -96,7 +96,7 @@
         </tr>
         <tr>
           <td>Return information about a single user by name</td>
-          <td>/users/[UserName]</td>
+          <td>/users/[Username]</td>
           <td>GET</td>
           <td>none</td>
           <td>JSON object with user info</td>
@@ -107,7 +107,7 @@
           <td>POST</td>                         
           <td>JSON object should look like this:
             <blockquote>{
-                "UserName": [String],
+                "Username": [String],
                 "Password": [String],
                 "Email": [String],
                 "Birthday": [Date]
@@ -122,7 +122,7 @@
           <td>/users/[userName]/update</td>                         
           <td>PUT</td>                         
           <td>A JSON object which sends new values for any (or all) of these keys            <blockquote>{
-                "UserName": [String],
+                "Username": [String],
                 "Password": [String],
                 "Email": [String],
                 "Birthday": [Date]
@@ -147,7 +147,7 @@
         </tr>
         <tr>
           <td>Remove a film from the User's film list</td>
-          <td>/users/[UserName]/movies/remove/[MovieID]</td>                      
+          <td>/users/[Username]/movies/remove/[MovieID]</td>                      
           <td>PUT</td>                         
           <td>None</td>
           <td>Text confirmation that the movie was deleted</td>                         
