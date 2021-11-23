@@ -56,27 +56,45 @@ app.get('/', (req, res) => {
 // get the entire movie database
 app.get('/movies', (req, res) => {
   // trying to query the db
-  Movies.find().then((movies) => res.json(movies));
+  Movies.find()
+    .then((movies) => {
+      res.json(movies);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
-
 // return the data for a specific movie
 app.get('/movies/:Title', (req, res) => {
-  Movies.findOne({ Title: req.params.Title }).then((movie) => res.json(movie));
+  Movies.findOne({ Title: req.params.Title })
+    .then((movie) => {
+      res.json(movie);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
 // return the genre of a movie
 app.get('/movies/:Title/Genre', (req, res) => {
-  Movies.findOne({ Title: req.params.Title }).then((movie) => {
-    if (movie) {
-      res
-        .status(201)
-        .send(
-          `The movie ${req.params.Title} is classified as a ${movie.Genre.Name}`
-        );
-    } else {
-      res.status(404).send(`Cannot find movie "${req.params.Title}"`);
-    }
-  });
+  Movies.findOne({ Title: req.params.Title })
+    .then((movie) => {
+      if (movie) {
+        res
+          .status(201)
+          .send(
+            `The movie ${req.params.Title} is classified as a ${movie.Genre.Name}`
+          );
+      } else {
+        res.status(404).send(`Cannot find movie "${req.params.Title}"`);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
 // return the data about directors in the database
@@ -93,7 +111,16 @@ app.get('/movies/:Title/director', (req, res) => {
 });
 
 // return data for a specific director
-app.get('/directors/:name', (req, res) => {});
+app.get('/directors/:name', (req, res) => {
+  Movies.findOne({ 'Director.Name': req.params.name })
+    .then((movie) => {
+      res.status(201).json(movie.Director);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
 
 // return all user data
 app.get('/users', (req, res) => {
@@ -123,12 +150,6 @@ app.get('/users/:UserName', (req, res) => {
 
 // add a user
 app.post('/users', (req, res) => {
-  // We expect json in this format
-  // {
-  // ID: Integer,
-  // Username: String,
-  // Email: String,
-  // Birthday: Date
   // Check if Username already exists
   Users.findOne({ UserName: req.body.UserName })
     .then((user) => {
