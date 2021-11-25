@@ -245,7 +245,7 @@ app.post(
             })
             // send a confirmation response
             .then((user) => {
-              res.status(201).json(user);
+              res.status(201).send(`User '${user.Username}' created`);
             })
             // cath any error that occors during the creation, like a missing value or incorret datatype
             .catch((error) => {
@@ -304,7 +304,7 @@ app.put(
           console.error(err);
           res.status(500).send('Error: ' + err);
         } else {
-          res.json(updatedUser);
+          res.send(`User ${updatedUser.Username} info updated.`);
         }
       }
     );
