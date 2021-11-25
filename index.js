@@ -24,7 +24,7 @@ mongoose.connect('mongodb://localhost:27017/movingPictures', {
 
 const app = express();
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // send back the timestamp of the request
 const requestTime = (req, res, next) => {
@@ -395,6 +395,6 @@ app.put(
 );
 // listen for requests
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Your app is listening on port ${PORT}.`);
 });
