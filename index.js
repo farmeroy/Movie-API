@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
+const { check, validationResult } = require('express-validator');
 
 // import mongoose and our models
 const mongoose = require('mongoose');
@@ -206,49 +207,83 @@ app.get(
 );
 
 // add a user
-app.post('/users', (req, res) => {
-  // hash user password through the req.body
-  const hashedPassword = Users.hashPassword(req.body.Password);
-
-  // Check if Username already exists
-  Users.findOne({ Username: req.body.Username })
-    .then((user) => {
-      // if it exists return a message, else create the user
-      if (user) {
-        return res.status(400).send(req.body.Username + 'already exists');
-      } else {
-        Users
-          // the Model.create method takes an object that matches the model
-          .create({
-            Username: req.body.Username,
-            // use the hashed password instead of the req.body Password
-            Password: hashedPassword,
-            Email: req.body.Email,
-            Birthday: req.body.Birthday,
-          })
-          // send a confirmation response
-          .then((user) => {
-            res.status(201).json(user);
-          })
-          // cath any error that occors during the creation, like a missing value or incorret datatype
-          .catch((error) => {
-            console.error(error);
-            res.status(500).send('Error: ' + error);
-          });
-      }
-    })
-    // catch an error that occurs in the original query
-    .catch((error) => {
-      console.error(error);
-      res.status(500).send('Error: ' + error);
-    });
-});
+app.post(
+  '/users',
+  // validation logic
+  [
+    check('Username', 'Username is required').isLength({ min: 5 }),
+    check(
+      'Username',
+      'Username contains non alphnumeric characters - not allowed.'
+    ).isAlphanumeric(),
+    check('Password', 'Password is required').not().isEmpty(),
+    check('Email', 'Email does not appear to be valid').isEmail(),
+  ],
+  (req, res) => {
+    // check validation result
+    const validationErrors = validationResult(req);
+    if (!validationErrors.isEmpty()) {
+      return res.status(422).json({errors: validationErrors.array()});
+    }
+    // hash user password through the req.body
+    const hashedPassword = Users.hashPassword(req.body.Password);
+    // Check if Username already exists
+    Users.findOne({ Username: req.body.Username })
+      .then((user) => {
+        // if it exists return a message, else create the user
+        if (user) {
+          return res.status(400).send(req.body.Username + 'already exists');
+        } else {
+          Users
+            // the Model.create method takes an object that matches the model
+            .create({
+              Username: req.body.Username,
+              // use the hashed password instead of the req.body Password
+              Password: hashedPassword,
+              Email: req.body.Email,
+              Birthday: req.body.Birthday,
+            })
+            // send a confirmation response
+            .then((user) => {
+              res.status(201).json(user);
+            })
+            // cath any error that occors during the creation, like a missing value or incorret datatype
+            .catch((error) => {
+              console.error(error);
+              res.status(500).send('Error: ' + error);
+            });
+        }
+      })
+      // catch an error that occurs in the original query
+      .catch((error) => {
+        console.error(error);
+        res.status(500).send('Error: ' + error);
+      });
+  }
+);
 
 // update user info
 app.put(
   '/users/:Username/update',
   passport.authenticate('jwt', { session: false }),
+  // validation logic
+  [
+    check('Username', 'Username is required').isLength({ min: 5 }),
+    check(
+      'Username',
+      'Username contains non alphnumeric characters - not allowed.'
+    ).isAlphanumeric(),
+    check('Password', 'Password is required').not().isEmpty(),
+    check('Email', 'Email does not appear to be valid').isEmail(),
+  ],
   (req, res) => {
+    // check validation result
+    const validationErrors = validationResult(req);
+    if (!validationErrors.isEmpty()) {
+      return res.status(422).json({errors: validationErrors.array()});
+    }
+    // hash the updated password
+    const hashedPassword = Users.hashedPassword(req.body.Password);
     Users.findOneAndUpdate(
       {
         Username: req.params.Username,
@@ -256,7 +291,7 @@ app.put(
       {
         $set: {
           Username: req.body.Username,
-          Password: req.body.Password,
+          Password: hashedPassword,
           Email: req.body.Email,
           Birthday: req.body.Birthday,
         },
