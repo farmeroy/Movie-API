@@ -121,7 +121,8 @@
           <td>Update user info</td>
           <td>/users/[Username]/update</td>                         
           <td>PUT</td>                         
-          <td>A JSON object which sends new values for any (or all) of these keys            <blockquote>{
+          <td>A JSON object which sends new values for any (or all) of these keys. All keys, even if they aren't to be updated, must be included.
+            <blockquote>{
                 "Username": [String],
                 "Password": [String],
                 "Email": [String],
