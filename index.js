@@ -16,11 +16,18 @@ const Users = Models.User;
 const cors = require('cors');
 // define our CORS allowed origins
 const allowedOrigins = ['https://localhost:3000', 'https://testsite.com'];
-// Connect to the database
-mongoose.connect('mongodb://localhost:27017/movingPictures', {
+
+// Connect to the local database
+// mongoose.connect('mongodb://localhost:27017/movingPictures', {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// });
+
+mongoose.connect(process.env.CONNECTION_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+
 
 const app = express();
 
