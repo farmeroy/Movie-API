@@ -291,7 +291,7 @@ app.put(
       return res.status(422).json({errors: validationErrors.array()});
     }
     // hash the updated password
-    const hashedPassword = Users.hashedPassword(req.body.Password);
+    const hashedPassword = Users.hashPassword(req.body.Password);
     Users.findOneAndUpdate(
       {
         Username: req.params.Username,
