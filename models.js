@@ -27,8 +27,8 @@ let userSchema = mongoose.Schema({
 });
 
 // this method hashses a new user's password
-userSchema.statics.hashPassword = (password) => {
-  return bcrypt.hashSync(password, 10);
+userSchema.statics.hashPassword = async (password) => {
+  return await bcrypt.hash(password, 10);
 };
 
 // this method hashes a password on login to compare to the stored hashed password
