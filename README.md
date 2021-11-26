@@ -5,4 +5,5 @@ This is a Rest API made with Node.js that will:
 <li> users to create, update, and delete an account</li>
 <li> users to create a list of their favorite movies from the database</li>
 </ul>
+You can read the relevent endpoints here: http://pre-code-flix.herokuapp.com/documentation.html
 
