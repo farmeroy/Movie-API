@@ -63,6 +63,7 @@ app.use(passport.initialize());
 
 // install and use CORS
 const cors = require('cors');
+app.use(cors());
 // define our CORS allowed origins
 // const allowedOrigins = ['https://localhost:3000', 'https://testsite.com'];
 // // call our CORS policy and check for origins
