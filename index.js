@@ -95,7 +95,7 @@ app.get('/', (req, res) => {
 // get the entire movie database
 app.get(
   '/movies',
-  passport.authenticate('jwt', { session: false }),
+  // passport.authenticate('jwt', { session: false }),
   (req, res) => {
     // trying to query the db
     Movies.find()
