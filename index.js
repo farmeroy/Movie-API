@@ -65,7 +65,7 @@ app.use(passport.initialize());
 const cors = require('cors');
 // app.use(cors());
 //define our CORS allowed origins
-const allowedOrigins = ['https://localhost:1234', 'https://testsite.com'];
+const allowedOrigins = ['http://localhost:1234', 'https://testsite.com'];
 // call our CORS policy and check for origins
 app.use(
   cors({
