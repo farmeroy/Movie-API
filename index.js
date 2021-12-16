@@ -313,7 +313,7 @@ app.put(
           console.error(err);
           res.status(500).send('Error: ' + err);
         } else {
-          res.send(`User ${updatedUser.Username} info updated.`);
+          res.json(updatedUser);
         }
       }
     );
