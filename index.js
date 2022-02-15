@@ -26,7 +26,7 @@ mongoose.connect(process.env.CONNECTION_URI, {
 
 const app = express();
 
-const PORT = process.env.PORT || 4200;
+const PORT = process.env.PORT || 3000;
 
 // send back the timestamp of the request
 const requestTime = (req, res, next) => {
