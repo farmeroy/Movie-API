@@ -4,7 +4,7 @@ const Models = require('./models.js');
 const passportJWT = require('passport-jwt');
 
 let Users = Models.User,
-  JWTStragegy = passportJWT.Strategy,
+  JWTStrategy = passportJWT.Strategy,
   ExtractJWT = passportJWT.ExtractJwt;
 
 // define a stragegy to check if a user exists
@@ -43,7 +43,7 @@ passport.use(
 
 // defina a stragey to verify a JWT signature
 passport.use(
-  new JWTStragegy(
+  new JWTStrategy(
     {
       jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
       secretOrKey: 'your_jwt_secret',
