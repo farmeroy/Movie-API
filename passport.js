@@ -17,6 +17,7 @@ passport.use(
     },
 
     (username, password, callback) => {
+      // check if this hashedPassword exists
       const hashedPassword = Users.hashPassword(password); 
       Users.findOne({ Username: username }, (error, user) => {
         if (error) {
