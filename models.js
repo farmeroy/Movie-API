@@ -32,8 +32,8 @@ userSchema.statics.hashPassword = (password) => {
 };
 
 // this method hashes a password on login to compare to the stored hashed password
-userSchema.methods.validatePassword = async function (password) {
-  return await bcrypt.compare(password, this.password)
+userSchema.methods.validatePassword = function (password) {
+  return bcrypt.compareSync(password, this.password)
 };
 
 // Create the models that will be used in the index.js to interact with the database
