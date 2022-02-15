@@ -32,7 +32,8 @@ userSchema.statics.hashPassword = async (password) => {
 };
 
 // this method hashes a password on login to compare to the stored hashed password
-userSchema.methods.validatePassword = async (password) => {
+// use function syntax to maintain correct this reference
+userSchema.methods.validatePassword = async function (password) {
   return await bcrypt.compare(password, this.password)
 };
 
