@@ -29,7 +29,7 @@ passport.use(
             message: 'Incorrect username or password.',
           });
         }
-        const isPassword =  user.validatePassword(hashedPassword);
+        const isPassword = user.validatePassword(hashedPassword);
         if ( !isPassword) {
           console.log('incorrect password');
           return callback(null, false, {message: 'Incorrect password.'});
