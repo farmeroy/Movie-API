@@ -7,7 +7,7 @@ let Users = Models.User,
   JWTStrategy = passportJWT.Strategy,
   ExtractJWT = passportJWT.ExtractJwt;
 
-// define a stragegy to check if a user exists
+// define a strategy to check if a user exists
 // if so a callback function is executed
 passport.use(
   new LocalStrategy(
