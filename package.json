@@ -4,7 +4,6 @@
   "description": "Movie API This is a Rest API made with Node.js that will: provide a list of movies with information about genre/director/etc., users to create, update, and delete an account users to create a list of their favorite movies from the database",
   "main": "index.js",
   "engines": {
-    "start": "node index.js",
     "node": "16.x"
   },
   "scripts": {
