@@ -34,17 +34,18 @@ const requestTime = (req, res, next) => {
   next();
 };
 
-// tell the app to use the middleware funtions for all requests
+// tell the app to use the middleware functions for all requests
 
 app.use(morgan('common'));
 app.use(requestTime);
 app.use(express.static('./public'));
 
+// >>>> this is a more recent commit that was possibly causing problems
 // install and use CORS
-const cors = require('cors');
-//
-// allow all origins
-app.use(cors());
+//const cors = require('cors');
+////
+//// allow all origins
+//app.use(cors());
 //
 //define our CORS allowed origins
 // const allowedOrigins = ['http://localhost:4200', 'https://testsite.com', 'https://pre-code-flix.netlify.app'];
@@ -63,6 +64,7 @@ app.use(cors());
 //     },
 //   })
 // );
+// <<<<<<<<
 
 
 app.use(
@@ -86,8 +88,9 @@ require('./passport');
 
 app.use(passport.initialize());
 
-<<<<<<< HEAD
-=======
+// <<<<<<< HEAD
+// =======
+// >>> Reverted to previous commit
 // install and use CORS
 const cors = require('cors');
 //
@@ -113,7 +116,7 @@ app.use(
 );
 
 
->>>>>>> parent of b51ecbd (removed backslash on netlifly.app)
+// >>>>>>> parent of b51ecbd (removed backslash on netlifly.app)
 
 // import the auth endpoints
 const auth = require('./auth')(app);
