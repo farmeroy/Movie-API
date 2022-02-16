@@ -98,7 +98,7 @@ const cors = require('cors');
 // app.use(cors());
 //
 //define our CORS allowed origins
-const allowedOrigins = ['http://localhost:1234', 'https://testsite.com', 'https://pre-code-flix.netlify.app/'];
+const allowedOrigins = ['http://localhost:1234', 'https://testsite.com', 'https://pre-code-flix.netlify.app'];
 // call our CORS policy and check for origins
 app.use(
   cors({
