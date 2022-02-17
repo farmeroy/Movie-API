@@ -27,14 +27,14 @@ let userSchema = mongoose.Schema({
 });
 
 // this method hashes a new user's password
-userSchema.statics.hashPassword = async (password) => {
-  return await bcrypt.hash(password, 10);
+userSchema.statics.hashPassword = (password) => {
+  return bcrypt.hashSync(password, 10);
 };
 
 // this method hashes a password on login to compare to the stored hashed password
 // use function syntax to maintain correct this reference
-userSchema.methods.validatePassword = async function (password) {
-  return await bcrypt.compare(password, this.Password)
+userSchema.methods.validatePassword = function (password) {
+  return bcrypt.compareSync(password, this.Password);
 };
 
 // Create the models that will be used in the index.js to interact with the database
