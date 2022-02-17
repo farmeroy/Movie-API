@@ -18,7 +18,6 @@ passport.use(
 
     (username, password, callback) => {
       // check if this hashedPassword exists
-      const hashedPassword = Users.hashPassword(password); 
       Users.findOne({ Username: username }, (error, user) => {
         if (error) {
           console.log(error);
@@ -30,8 +29,8 @@ passport.use(
             message: 'Incorrect username or password.',
           });
         }
-        const isPassword = user.validatePassword(hashedPassword);
-        if ( !isPassword) {
+        
+        if ( !user.validatePassword(password)) {
           console.log('incorrect password');
           return callback(null, false, {message: 'Incorrect password.'});
         }
@@ -42,7 +41,7 @@ passport.use(
   )
 );
 
-// defina a stragey to verify a JWT signature
+// define a stragey to verify a JWT signature
 passport.use(
   new JWTStrategy(
     {
