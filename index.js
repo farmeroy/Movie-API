@@ -69,7 +69,7 @@ const cors = require('cors');
 // app.use(cors());
 //
 //define our CORS allowed origins
-const allowedOrigins = ['http://localhost:1234', 'http://localhost:4200', 'https://testsite.com', 'https://pre-code-flix.netlify.app', 'https://farmeroy.github.io/angular-movie-app'];
+const allowedOrigins = ['http://localhost:1234', 'http://localhost:4200', 'https://testsite.com', 'https://pre-code-flix.netlify.app', 'https://farmeroy.github.io'];
 // call our CORS policy and check for origins
 app.use(
   cors({
