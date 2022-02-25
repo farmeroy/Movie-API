@@ -3,8 +3,6 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 const { check, validationResult } = require('express-validator');
-
-// import mongoose and our models
 const mongoose = require('mongoose');
 const Models = require('./models.js');
 
@@ -12,12 +10,13 @@ const Models = require('./models.js');
 const Movies = Models.Movie;
 const Users = Models.User;
 
-// Connect to the local database
+// Use this to connect to the local database during testing
 // mongoose.connect('mongodb://localhost:27017/movingPictures', {
 //   useNewUrlParser: true,
 //   useUnifiedTopology: true,
 // });
 
+// Use this to connect to the online database
 mongoose.connect(process.env.CONNECTION_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -35,7 +34,6 @@ const requestTime = (req, res, next) => {
 };
 
 // tell the app to use the middleware functions for all requests
-
 app.use(morgan('common'));
 app.use(requestTime);
 app.use(express.static('./public'));
@@ -59,7 +57,6 @@ app.use((err, req, res, next) => {
 const passport = require('passport');
 // import our passport.js file
 require('./passport');
-
 app.use(passport.initialize());
 
 // install and use CORS
@@ -70,6 +67,7 @@ const cors = require('cors');
 //
 //define our CORS allowed origins
 const allowedOrigins = ['http://localhost:1234', 'http://localhost:4200', 'https://testsite.com', 'https://pre-code-flix.netlify.app', 'https://farmeroy.github.io'];
+
 // call our CORS policy and check for origins
 app.use(
   cors({
@@ -86,18 +84,22 @@ app.use(
   })
 );
 
-
-// >>>>>>> parent of b51ecbd (removed backslash on netlifly.app)
-
 // import the auth endpoints
 const auth = require('./auth')(app);
-// // GET requests
+// GET requests
+
 app.get('/', (req, res) => {
   res.send(`Welcome to myFlix.
    \n\n <small> You accessed this site at ${req.requestTime}</small>`);
 });
 
-// get the entire movie database
+/** 
+ * @description Endpoint to return movie database
+ * Requires JWT Bearer token
+ * @method get 
+ * @param {req.headers} object - headers {"Authorization" : "Bearer <jwt>"}
+ * @returns {object} - JSON object containing all movie data
+ */
 app.get(
   '/movies',
   passport.authenticate('jwt', { session: false }),
@@ -113,7 +115,13 @@ app.get(
       });
   }
 );
-// return the data for a specific movie
+
+/**
+ * @description Endpoint to get data for one movie by Title
+ * @method get
+ * @param {req.headers} object - headers {"Authorization" : "Bearer <jwt>"}
+ * @returns {object} - JSON object 
+*/
 app.get(
   '/movies/:Title',
   passport.authenticate('jwt', { session: false }),
@@ -129,7 +137,12 @@ app.get(
   }
 );
 
-// return the genre of a movie
+/**
+ * @description Endpoint to get info about a genre
+ * @method get
+ * @param {req.headers} object - headers {"Authorization" : "Bearer <jwt>"}
+ * @returns {object} - JSON object with genre info
+*/
 app.get(
   '/movies/:Title/Genre',
   passport.authenticate('jwt', { session: false }),
@@ -153,7 +166,13 @@ app.get(
   }
 );
 
-// return the data about directors in the database
+/**
+ * @description Endpoint to get info about the director of a movie
+ * @method get
+ * @param {string} endpoint - /movies/:Title/director
+ * @param {req.headers} object - headers {"Authorization" : "Bearer <jwt>"}
+ * @returns {object} - JSON object
+ */
 app.get(
   '/movies/:Title/director',
   passport.authenticate('jwt', { session: false }),
@@ -171,6 +190,14 @@ app.get(
 );
 
 // return data for a specific director
+//
+/**
+ * @description Endpoint to get info about the director of a movie
+ * @method get
+ * @param {string} endpoint - /movies/:Title/director
+ * @param {req.headers} object - headers {"Authorization" : "Bearer <jwt>"}
+ * @returns {object} - JSON object
+ */
 app.get(
   '/directors/:name',
   passport.authenticate('jwt', { session: false }),
@@ -187,6 +214,14 @@ app.get(
 );
 
 // return all user data
+//
+/**
+ * @description Endpoint to get info about the director of a movie
+ * @method get
+ * @param {string} endpoint - /movies/:Title/director
+ * @param {req.headers} object - headers {"Authorization" : "Bearer <jwt>"}
+ * @returns {object} - JSON object
+ */
 app.get(
   '/users',
   passport.authenticate('jwt', { session: false }),
@@ -204,6 +239,13 @@ app.get(
 );
 
 // return data for a specific user
+/**
+ * @description Endpoint to get info about the director of a movie
+ * @method get
+ * @param {string} endpoint - /movies/:Title/director
+ * @param {req.headers} object - headers {"Authorization" : "Bearer <jwt>"}
+ * @returns {object} - JSON object
+ */
 app.get(
   '/users/:Username',
   passport.authenticate('jwt', { session: false }),
@@ -220,7 +262,17 @@ app.get(
   }
 );
 
-// add a user
+/**
+ * @description Create a new user
+ * @method post
+ * @param {req.body} - JSON object that looks like this:
+ *  {
+ * "Username": "johndoe",<br>
+ * "Password": "aStrongPasWwOOrd",<br>
+ * "Email" : "johndo@gmail.com",<br>
+ * "Birthday" : "1995-08-24"<br>
+ * }
+*/
 app.post(
   '/users',
   // validation logic
@@ -276,7 +328,14 @@ app.post(
   }
 );
 
-// update user info
+
+/**
+ * @description Endpoint to update a user's data
+ * @method put
+ * @param {string} endpoint -/users/:Username/update
+ * @param {req.headers} object - headers {"Authorization" : "Bearer <jwt>"}
+ * @returns {object} - JSON object containing updated user data
+ */
 app.put(
   '/users/:Username/update',
   passport.authenticate('jwt', { session: false }),
@@ -325,7 +384,13 @@ app.put(
   }
 );
 
-// delete user account
+/**
+ * @description Endpoint to delete a user account
+ * @method delete
+ * @param {string} endpoint - /users/:Username/delete
+ * @param {req.headers} object - headers {"Authorization" : "Bearer <jwt>"} 
+ * @returns {string} - confirmation message
+*/
 app.delete(
   '/users/:Username/delete',
   passport.authenticate('jwt', { session: false }),
@@ -345,7 +410,13 @@ app.delete(
   }
 );
 
-// add movies to the user account
+/**
+ * @description Endpoint to add movies to the user account
+ * @method put
+ * @param {string} endpoint - /users/:Username/movies/:MovieID
+ * @param {req.headers} object - headers {"Authorization" : "Bearer <jwt>"}
+ * @returns {object} - JSON object containing the user data
+ */
 app.put(
   '/users/:Username/movies/:MovieID',
   passport.authenticate('jwt', { session: false }),
@@ -367,6 +438,13 @@ app.put(
 );
 
 // Return a users favorite movies
+/**
+ * @description Endpoint to get info about the director of a movie
+ * @method get
+ * @param {string} endpoint - /movies/:Title/director
+ * @param {req.headers} object - headers {"Authorization" : "Bearer <jwt>"}
+ * @returns {object} - JSON object
+ */
 app.get(
   '/users/:Username/movies',
   passport.authenticate('jwt', { session: false }),
@@ -387,7 +465,13 @@ app.get(
   }
 );
 
-// remove movie from user's FavMovies
+/**
+ * @description Endpoint to remove a movie from a user's favorite movies
+ * @method put
+ * @param {string} endpoint - /users/:Username/movies/remove/:id
+ * @param {req.headers} object - headers {"Authorization" : "Bearer <jwt>"}
+ * @returns {string} - confirmation message 
+ */
 app.put(
   '/users/:Username/movies/remove/:id',
   passport.authenticate('jwt', { session: false }),
