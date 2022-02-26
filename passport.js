@@ -3,6 +3,7 @@ const LocalStrategy = require('passport-local');
 const Models = require('./models.js');
 const passportJWT = require('passport-jwt');
 
+// create Users model and add the passport methods to the modeol
 let Users = Models.User,
   JWTStrategy = passportJWT.Strategy,
   ExtractJWT = passportJWT.ExtractJwt;
@@ -41,7 +42,7 @@ passport.use(
   )
 );
 
-// define a stragey to verify a JWT signature
+// define a strategy to verify a JWT signature
 passport.use(
   new JWTStrategy(
     {
