@@ -67,10 +67,10 @@ const cors = require('cors');
 //define our CORS allowed origins
 const allowedOrigins = [
   'http://localhost:1234',
+  'http://localhost:1234/',
   'http://localhost:3000',
-  'https://testsite.com',
+  'http://localhost:3000/',
   'https://pre-code-flix.netlify.app',
-  'https://farmeroy.github.io',
 ];
 
 // call our CORS policy and check for origins
