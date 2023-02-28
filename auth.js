@@ -5,13 +5,12 @@ const jwt = require('jsonwebtoken'),
 
 require('./passport'); // local passport file
 
-
 /**
  * @description Create a JWT web token
  * @method generateJWTToken
  * @param {object} - An object containing the user data
  * @returns {string} - A jwt web token
-*/
+ */
 let generateJWTToken = (user) => {
   return jwt.sign(user, jwtSecret, {
     // encode a Username
@@ -25,23 +24,23 @@ let generateJWTToken = (user) => {
 
 /**
  * @description Exported API enpoints
-*/
+ */
 
 module.exports = (router) => {
-
   /**
-   * @description Endpoing for user loning and authentication
+   * @description Endpoint for user login and authentication
    * Calls passport.authenticate and if credentials are valid redirects to the main view, otherwise denies access (throws an error)
    * @method postUserCredentials
    * @param {string} endpoint - /login
-   * 
-  */
+   *
+   */
   router.post('/login', (req, res) => {
+    console.log(req.body);
     passport.authenticate('local', { session: false }, (error, user, info) => {
       if (error || !user) {
         return res.status(400).json({
           message: 'Something is not right',
-          user: user,
+          info: info,
         });
       }
       req.login(user, { session: false }, (error) => {

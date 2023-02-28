@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 // define a mongose schema
-/** 
+/**
  * @description The mongoose schema for a the Movies
  * {
  * Title: { type: String, required: true },
@@ -19,7 +19,7 @@ const bcrypt = require('bcrypt');
  * ImagePath: String,
  * Featured: Boolean,
  *}
-*/
+ */
 let movieSchema = mongoose.Schema({
   Title: { type: String, required: true },
   Description: { type: String, required: true },
@@ -45,7 +45,7 @@ let movieSchema = mongoose.Schema({
  * Birthday: Date,
  * FavMovies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }],
  * }
-*/
+ */
 let userSchema = mongoose.Schema({
   Username: { type: String, required: true },
   Password: { type: String, required: true },
@@ -58,7 +58,7 @@ let userSchema = mongoose.Schema({
  * @description Hash a password with bcrypt
  * @param {string} - password string
  * @returns {string} - password hash
-*/
+ */
 userSchema.statics.hashPassword = (password) => {
   // Although the bcrypt docs say to use the async method on servers, the sync method works better here
   return bcrypt.hashSync(password, 10);
@@ -68,7 +68,7 @@ userSchema.statics.hashPassword = (password) => {
  * @description Validate an entered password by comparing it to the stored password hash
  * @param {string} - password string
  * @returns {boolean}
-*/
+ */
 // use 'function syntax to maintain correct .this reference
 userSchema.methods.validatePassword = function (password) {
   return bcrypt.compareSync(password, this.Password);
