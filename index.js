@@ -1,14 +1,11 @@
 const express = require('express');
 const morgan = require('morgan');
+require('dotenv').config();
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 const { check, validationResult } = require('express-validator');
 const mongoose = require('mongoose');
 const Models = require('./models.js');
-
-// references to the models
-const Movies = Models.Movie;
-const Users = Models.User;
 
 // Use this to connect to the local database during testing
 // mongoose.connect('mongodb://localhost:27017/movingPictures', {
@@ -17,11 +14,14 @@ const Users = Models.User;
 // });
 
 // Use this to connect to the online database
-mongoose.connect(process.env.CONNECTION_URI, {
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
+// references to the models
+const Movies = Models.Movie;
+const Users = Models.User;
 
 const app = express();
 
@@ -37,7 +37,6 @@ const requestTime = (req, res, next) => {
 app.use(morgan('common'));
 app.use(requestTime);
 app.use(express.static('./public'));
-
 
 app.use(
   bodyParser.urlencoded({
@@ -66,7 +65,13 @@ const cors = require('cors');
 // app.use(cors());
 //
 //define our CORS allowed origins
-const allowedOrigins = ['http://localhost:1234', 'http://localhost:4200', 'https://testsite.com', 'https://pre-code-flix.netlify.app', 'https://farmeroy.github.io'];
+const allowedOrigins = [
+  'http://localhost:1234',
+  'http://localhost:3000',
+  'https://testsite.com',
+  'https://pre-code-flix.netlify.app',
+  'https://farmeroy.github.io',
+];
 
 // call our CORS policy and check for origins
 app.use(
@@ -93,10 +98,10 @@ app.get('/', (req, res) => {
    \n\n <small> You accessed this site at ${req.requestTime}</small>`);
 });
 
-/** 
+/**
  * @description Endpoint to return movie database
  * Requires JWT Bearer token
- * @method get 
+ * @method get
  * @param {req.headers} object - headers {"Authorization" : "Bearer <jwt>"}
  * @returns {object} - JSON object containing all movie data
  */
@@ -120,8 +125,8 @@ app.get(
  * @description Endpoint to get data for one movie by Title
  * @method get
  * @param {req.headers} object - headers {"Authorization" : "Bearer <jwt>"}
- * @returns {object} - JSON object 
-*/
+ * @returns {object} - JSON object
+ */
 app.get(
   '/movies/:Title',
   passport.authenticate('jwt', { session: false }),
@@ -142,7 +147,7 @@ app.get(
  * @method get
  * @param {req.headers} object - headers {"Authorization" : "Bearer <jwt>"}
  * @returns {object} - JSON object with genre info
-*/
+ */
 app.get(
   '/movies/:Title/Genre',
   passport.authenticate('jwt', { session: false }),
@@ -271,7 +276,7 @@ app.get(
  * "Email" : "johndo@gmail.com",
  * "Birthday" : "1995-08-24"
  * }
-*/
+ */
 app.post(
   '/users',
   // validation logic
@@ -288,7 +293,7 @@ app.post(
     // check validation result
     const validationErrors = validationResult(req);
     if (!validationErrors.isEmpty()) {
-      return res.status(422).json({errors: validationErrors.array()});
+      return res.status(422).json({ errors: validationErrors.array() });
     }
     // hash user password through the req.body
     const hashedPassword = Users.hashPassword(req.body.Password);
@@ -327,7 +332,6 @@ app.post(
   }
 );
 
-
 /**
  * @description Endpoint to update a user's data
  * @method put
@@ -352,7 +356,7 @@ app.put(
     // check validation result
     const validationErrors = validationResult(req);
     if (!validationErrors.isEmpty()) {
-      return res.status(422).json({errors: validationErrors.array()});
+      return res.status(422).json({ errors: validationErrors.array() });
     }
     // hash the updated password
     const hashedPassword = Users.hashPassword(req.body.Password);
@@ -387,9 +391,9 @@ app.put(
  * @description Endpoint to delete a user account
  * @method delete
  * @param {string} endpoint - /users/:Username/delete
- * @param {req.headers} object - headers {"Authorization" : "Bearer <jwt>"} 
+ * @param {req.headers} object - headers {"Authorization" : "Bearer <jwt>"}
  * @returns {string} - confirmation message
-*/
+ */
 app.delete(
   '/users/:Username/delete',
   passport.authenticate('jwt', { session: false }),
@@ -469,7 +473,7 @@ app.get(
  * @method put
  * @param {string} endpoint - /users/:Username/movies/remove/:id
  * @param {req.headers} object - headers {"Authorization" : "Bearer <jwt>"}
- * @returns {string} - confirmation message 
+ * @returns {string} - confirmation message
  */
 app.put(
   '/users/:Username/movies/remove/:id',
