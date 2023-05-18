@@ -39,6 +39,7 @@
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
+    "@flydotio/dockerfile": "^0.2.5",
     "eslint": "^8.2.0",
     "eslint-plugin-react": "^7.27.0",
     "jsdoc": "^4.0.2",
