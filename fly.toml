@@ -6,13 +6,6 @@
 app = "old-grass-3144"
 primary_region = "lax"
 
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-  min_machines_running = 0
-
 [[services]]
   internal_port = 3000
   protocol = "tcp"
