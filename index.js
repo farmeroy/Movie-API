@@ -69,7 +69,7 @@ const allowedOrigins = [
   'http://localhost:1234',
   'http://localhost:1234/',
   'http://localhost:3000',
-  'http://localhost:3000/',
+  'http://localhost:5173/',
   'https://pre-code-flix.netlify.app',
 ];
 
