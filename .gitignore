@@ -5,3 +5,4 @@ node_modules
 movie-api-notes.txt
 *.docx
 .env
+fly.toml
