@@ -1,4 +1,5 @@
 const express = require('express');
+const jwt = require('jsonwebtoken');
 const morgan = require('morgan');
 require('dotenv').config();
 const bodyParser = require('body-parser');
@@ -66,9 +67,6 @@ app.use(cors());
 //
 //define our CORS allowed origins
 // const allowedOrigins = [
-//   'http://localhost:1234',
-//   'http://localhost:3000',
-//   'http://localhost:5173/',
 //   'https://pre-code-flix.netlify.app',
 // ];
 
@@ -256,7 +254,15 @@ app.get(
     Users.findOne({ Username: req.params.Username })
       // .populate('FavMovies')
       .then((user) => {
-        res.json(user);
+        res.json({
+          user: {
+            Birthday: user.Birthday,
+            Email: user.Email,
+            FavMovies: [...user.FavMovies],
+            Username: user.Username,
+            _id: user._id,
+          },
+        });
       })
       .catch((err) => {
         console.error(err);
@@ -316,7 +322,7 @@ app.post(
             .then((user) => {
               res.status(201).send(`User '${user.Username}' created`);
             })
-            // cath any error that occors during the creation, like a missing value or incorret datatype
+            // catch any error that occurs during the creation, like a missing value or incorrect datatype
             .catch((error) => {
               console.error(error);
               res.status(500).send('Error: ' + error);
@@ -352,6 +358,13 @@ app.put(
     check('Email', 'Email does not appear to be valid').isEmail(),
   ],
   (req, res) => {
+    // we check that the subject of the jwt token is the same user as the one to update
+    const token = req.headers.authorization.split(' ')[1];
+    const verifiedUser = jwt.decode(token).sub;
+    if (req.params.Username != verifiedUser) {
+      return res.status(401).json({ errors: 'Not Authorized' });
+    }
+
     // check validation result
     const validationErrors = validationResult(req);
     if (!validationErrors.isEmpty()) {
@@ -397,6 +410,12 @@ app.delete(
   '/users/:Username/delete',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    // we check that the subject of the jwt token is the same user as the one to delete
+    const verifiedUser = jwt.decode(token).sub;
+    if (req.params.Username != verifiedUser) {
+      return res.status(401).json({ errors: 'Not Authorized' });
+    }
     Users.findOneAndRemove({ Username: req.params.Username })
       .then((user) => {
         if (!user) {
@@ -432,7 +451,15 @@ app.put(
           console.error(err);
           res.status(500).send('Error: ' + err);
         } else {
-          res.json(updatedUser);
+          res.json({
+            user: {
+              Birthday: updatedUser.Birthday,
+              Email: updatedUser.Email,
+              FavMovies: [...updatedUser.FavMovies],
+              Username: updatedUser.Username,
+              _id: updatedUser._id,
+            },
+          });
         }
       }
     );
