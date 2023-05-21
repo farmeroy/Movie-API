@@ -364,6 +364,9 @@ app.put(
     if (req.params.Username != verifiedUser) {
       return res.status(401).json({ errors: 'Not Authorized' });
     }
+    if (req.params.Username == 'testUser') {
+      return res.status(401).json({ errors: 'User testUser cannot be edited' });
+    }
 
     // check validation result
     const validationErrors = validationResult(req);
@@ -415,6 +418,11 @@ app.delete(
     const verifiedUser = jwt.decode(token).sub;
     if (req.params.Username != verifiedUser) {
       return res.status(401).json({ errors: 'Not Authorized' });
+    }
+    if (req.params.Username == 'testUser') {
+      return res
+        .status(401)
+        .json({ errors: 'User testUser cannot be deleted' });
     }
     Users.findOneAndRemove({ Username: req.params.Username })
       .then((user) => {
